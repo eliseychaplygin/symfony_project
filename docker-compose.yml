@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  mysql:
+    build:
+      context: docker/mysql
+    environment:
+      - MYSQL_DATABASE="project1"
+      - MYSQL_USER="user"
+      - MYSQL_PASSWORD="userpass"
+      - MYSQL_ROOT_PASSWORD="admin"
+    ports:
+      - "3306:3306"
+    volumes:
+      - .docker/mysql/log:/var/log/mysql
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_ARBITRARY=1
+      - UPLOAD_LIMIT=500M
+
+  php:
+    build:
+      context: docker/php
+    depends_on:
+      - mysql
+    environment:
+#      - APP_ENV=${APP_ENV}
+#      - APP_SECRET=${APP_SECRET}
+      - DATABASE_URL=mysql://user:userpass@mysql:3306/project1?serverVersion=5.7
+    volumes:
+      - .:/var/www
+#    command: php bin/console messenger:consume pre_order_recalculate
+
+  nginx:
+    build:
+      context: docker/nginx
+    volumes:
+      - .:/var/www
+      - .docker/nginx/logs/:/var/log/nginx
+    depends_on:
+      - php
+    ports:
+      - "80:80"
