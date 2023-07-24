@@ -5,10 +5,10 @@ services:
     build:
       context: docker/mysql
     environment:
-      - MYSQL_DATABASE="project1"
-      - MYSQL_USER="user"
-      - MYSQL_PASSWORD="userpass"
-      - MYSQL_ROOT_PASSWORD="admin"
+      - MYSQL_DATABASE=${DATABASE_NAME}
+      - MYSQL_USER=${DATABASE_USER}
+      - MYSQL_PASSWORD=${DATABASE_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
@@ -21,7 +21,10 @@ services:
       - "8080:80"
     environment:
       - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
       - UPLOAD_LIMIT=500M
+    depends_on:
+      - mysql
 
   php:
     build:
@@ -29,9 +32,9 @@ services:
     depends_on:
       - mysql
     environment:
-#      - APP_ENV=${APP_ENV}
-#      - APP_SECRET=${APP_SECRET}
-      - DATABASE_URL=mysql://user:userpass@mysql:3306/project1?serverVersion=5.7
+      - APP_ENV=${APP_ENV}
+      - APP_SECRET=${APP_SECRET}
+      - DATABASE_URL=mysql://${DATABASE_USER}:${DATABASE_PASSWORD}@mysql:3306/${DATABASE_NAME}?serverVersion=5.7
     volumes:
       - .:/var/www
 #    command: php bin/console messenger:consume pre_order_recalculate
