@@ -10,8 +10,10 @@
         "doctrine/doctrine-bundle": "^2.10",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "2.15.3",
+        "fzaninotto/faker": "^1.5",
         "michelf/php-markdown": "^2.0",
         "nesbot/carbon": "^2.68",
+        "stof/doctrine-extensions-bundle": "^1.8",
         "symfony/asset": "6.3.*",
         "symfony/cache": "6.3.*",
         "symfony/console": "6.3.*",
@@ -76,6 +78,7 @@
         }
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.4",
         "symfony/maker-bundle": "^1.50",
         "symfony/stopwatch": "6.3.*",
         "symfony/web-profiler-bundle": "6.3.*"
