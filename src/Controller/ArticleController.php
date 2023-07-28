@@ -24,16 +24,8 @@ class ArticleController extends AbstractController
     #[Route("/article/{slug}", name: "article_show", methods: ["GET"])]
     public function show(Article $article): Response
     {
-        $comments = [
-            'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus, eligendi.',
-            'Est ferox detrius, cesaris.',
-            'Pius, dexter abnobas saepe experientia de fidelis, peritus lixa.',
-            'Castus, noster verpas sensim manifestum de rusticus, dexter victrix.'
-        ];
-
         return $this->render('articles/show.html.twig', [
-            'article' => $article,
-            'comments' => $comments
+            'article' => $article
         ]);
     }
 }

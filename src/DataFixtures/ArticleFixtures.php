@@ -3,9 +3,11 @@
 namespace App\DataFixtures;
 
 use App\Entity\Article;
+use App\Entity\Tag;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class ArticleFixtures extends BaseFixtures
+class ArticleFixtures extends BaseFixtures implements DependentFixtureInterface
 {
     private static $articleTitles = [
         'Есть ли жизнь после девятой жизни?',
@@ -30,7 +32,7 @@ class ArticleFixtures extends BaseFixtures
 
     public function loadData(ObjectManager $manager): void
     {
-        $this->createMany(Article::class, 10, function (Article $article) {
+        $this->createMany(Article::class, 10, function (Article $article) use ($manager) {
             $article->setTitle($this->faker->randomElement(self::$articleTitles))
                 ->setBody('Lorem ipsum **красная точка** dolor sit amet, consectetur adipiscing elit, sed
 do eiusmod tempor incididunt [Сметанка](/) ut labore et dolore magna aliqua.
@@ -43,6 +45,26 @@ do eiusmod tempor incididunt [Сметанка](/) ut labore et dolore magna ali
             $article->setAuthor($this->faker->randomElement(self::$articleAuthors))
                 ->setLikeCount($this->faker->numberBetween(0, 10))
                 ->setImageFilename($this->faker->randomElement(self::$articleImages));
+
+            /** @var Tag[] $tags */
+            $tags = [];
+
+            for ($i = 0; $i < $this->faker->numberBetween(0, 5); $i++) {
+                $tags[] = $this->getRandomReference(Tag::class);
+            }
+
+            foreach ($tags as $tag) {
+                $article->addTag($tag);
+            }
+
         });
+
+    }
+
+    public function getDependencies(): array
+    {
+        return [
+            TagFixtures::class
+        ];
     }
 }
